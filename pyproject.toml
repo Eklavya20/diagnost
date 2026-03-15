@@ -20,3 +20,6 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/Eklavya20/diagnost"
 Issues = "https://github.com/Eklavya20/diagnost/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
