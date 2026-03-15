@@ -45,7 +45,7 @@ def _check_missing(df):
 def _check_class_balance(df):
     """Check value distribution for categorical columns."""
     balance = {}
-    for col in df.select_dtypes(include=["object", "category"]).columns:
+    for col in df.select_dtypes(include=["category", "str"]).columns:
         counts = df[col].value_counts()
         balance[col] = counts.to_dict()
     return balance
@@ -87,7 +87,6 @@ def _print_dataset_summary(results, df):
     print("\n========== dataset report ==========")
     print(f"  Shape : {results['shape'][0]} rows x {results['shape'][1]} columns")
 
-    # Missing
     if results["missing"]:
         print(f"\n  Missing Values:")
         for col, m in results["missing"].items():
@@ -95,7 +94,6 @@ def _print_dataset_summary(results, df):
     else:
         print("\n  ✓ No missing values.")
 
-    # Correlations
     if results["correlations"]:
         print(f"\n  ⚠ Highly Correlated Features (>0.85):")
         for pair, val in results["correlations"].items():
@@ -103,7 +101,6 @@ def _print_dataset_summary(results, df):
     else:
         print("  ✓ No high correlations detected.")
 
-    # Outliers
     if results["outliers"]:
         print(f"\n  ⚠ Outliers Detected (IQR method):")
         for col, o in results["outliers"].items():

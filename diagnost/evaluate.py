@@ -41,8 +41,9 @@ def evaluate(model, X, y, task="classification", sensitive_features=None):
 
 
 def _evaluate_classification(model, X, y, sensitive_features):
-    y_pred = model.predict(X)
-    y_proba = model.predict_proba(X) if hasattr(model, "predict_proba") else None
+    feature_cols = list(model.feature_names_in_) if hasattr(model, "feature_names_in_") else list(X.columns)
+    y_pred = model.predict(X[feature_cols])
+    y_proba = model.predict_proba(X[feature_cols]) if hasattr(model, "predict_proba") else None
 
     results = {
         "task": "classification",
@@ -57,7 +58,6 @@ def _evaluate_classification(model, X, y, sensitive_features):
         "subgroup_results": {},
     }
 
-    # Subgroup performance
     if sensitive_features:
         for feature in sensitive_features:
             if feature in X.columns:
@@ -69,7 +69,8 @@ def _evaluate_classification(model, X, y, sensitive_features):
 
 
 def _evaluate_regression(model, X, y, sensitive_features):
-    y_pred = model.predict(X)
+    feature_cols = list(model.feature_names_in_) if hasattr(model, "feature_names_in_") else list(X.columns)
+    y_pred = model.predict(X[feature_cols])
     residuals = y - y_pred
 
     results = {
