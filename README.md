@@ -1,9 +1,7 @@
 # diagnost
 
 **A model diagnostics library for data scientists.**  
-Performance, calibration, drift detection, and dataset health checks — in a few lines of Python.
-
----
+Performance, calibration, drift detection, and dataset health checks, all in a few lines of Python.
 
 ## Why diagnost?
 
@@ -15,16 +13,12 @@ After training, the real questions start:
 - Are its confidence scores meaningful?
 - Has my data drifted since I trained it?
 
-diagnost answers all of these — cleanly, quickly, and in plain English.
-
----
+diagnost answers all of these, cleanly, quickly, and in plain English.
 
 ## Installation
 ```bash
 pip install diagnost
 ```
-
----
 
 ## Quickstart
 ```python
@@ -41,8 +35,6 @@ model = RandomForestClassifier().fit(X_train, y_train)
 report = diagnost.evaluate(model, X_test, y_test, task="classification")
 report.summary()
 ```
-
----
 
 ## Features
 
@@ -69,8 +61,6 @@ report = diagnost.evaluate(
 report.summary()
 ```
 
----
-
 ### 2. Model Comparison
 Compare multiple models side by side with a winner declared automatically.
 ```python
@@ -86,8 +76,6 @@ report = compare(
 df = report.to_dataframe()  # returns a pandas DataFrame
 ```
 
----
-
 ### 3. Calibration Analysis
 Check whether your model's predicted probabilities are actually reliable.
 ```python
@@ -100,8 +88,6 @@ Output includes:
 - Expected Calibration Error (ECE) per class
 - Plain-English verdict ("Well calibrated", "Poorly calibrated")
 - Reliability diagram
-
----
 
 ### 4. Drift Detection
 Detect whether your input data has shifted since training.
@@ -116,8 +102,6 @@ check_drift(X_train, X_new)
 - Per-feature drift verdict with p-values
 - Distribution plots for drifted features
 
----
-
 ### 5. Dataset Diagnostics
 Inspect your dataset before modelling.
 ```python
@@ -130,34 +114,26 @@ Checks for:
 - Outliers (IQR method)
 - Feature distributions (visual)
 
----
-
 ## Saving Reports
 ```python
 report = diagnost.evaluate(model, X_test, y_test, task="classification")
 report.save("report.json")  # exports as JSON
 ```
 
----
-
 ## Supported Model Types
 
-| Task           | Supported Frameworks                    |
-|----------------|-----------------------------------------|
+| Task           | Supported Frameworks                      |
+|----------------|-------------------------------------------|
 | Classification | scikit-learn, XGBoost, LightGBM, CatBoost |
 | Regression     | scikit-learn, XGBoost, LightGBM, CatBoost |
-| Clustering     | scikit-learn                            |
+| Clustering     | scikit-learn                              |
 
 Any model with a `.predict()` method will work.
-
----
 
 ## Requirements
 
 - Python >= 3.9
 - numpy, pandas, scipy, matplotlib, scikit-learn
-
----
 
 ## Contributing
 
@@ -173,14 +149,10 @@ pytest tests/ -v
 
 Please open an issue before submitting a large pull request.
 
----
-
 ## License
 
 MIT License — free to use, modify, and distribute.  
 See [LICENSE](LICENSE) for details.
-
----
 
 ## Author
 
