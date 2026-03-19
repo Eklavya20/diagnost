@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "diagnost"
-version = "0.1.0"
+version = "0.1.1"
 description = "A model diagnostics library for data scientists — performance, calibration, drift, and reporting in a few lines of Python."
 readme = "README.md"
 license = { file = "LICENSE" }
