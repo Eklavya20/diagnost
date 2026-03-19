@@ -3,6 +3,11 @@
 **A model diagnostics library for data scientists.**  
 Performance, calibration, drift detection, and dataset health checks, all in a few lines of Python.
 
+[![PyPI version](https://badge.fury.io/py/diagnost.svg)](https://pypi.org/project/diagnost/)
+[![Python](https://img.shields.io/pypi/pyversions/diagnost)](https://pypi.org/project/diagnost/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://img.shields.io/badge/tests-24%20passed-brightgreen)](https://github.com/Eklavya20/diagnost)
+
 ## Why diagnost?
 
 Most ML libraries help you build models. diagnost helps you **trust them**.
