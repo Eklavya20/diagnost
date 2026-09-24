@@ -1,6 +1,5 @@
 import pytest
 import numpy as np
-import pandas as pd
 from sklearn.datasets import load_iris, load_diabetes
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression
@@ -78,6 +77,25 @@ def test_regression_rmse_positive(regression_data):
     model = LinearRegression().fit(X_train, y_train)
     report = evaluate(model, X_test, y_test, task="regression")
     assert report.results["rmse"] >= 0
+
+
+def test_single_sample_regression_subgroup_has_no_r2(regression_data):
+    X_train, X_test, y_train, y_test = regression_data
+    model = LinearRegression().fit(X_train, y_train)
+    X_test = X_test.copy()
+    X_test["group"] = "many"
+    X_test.iloc[0, X_test.columns.get_loc("group")] = "single"
+
+    report = evaluate(
+        model,
+        X_test,
+        y_test,
+        task="regression",
+        sensitive_features=["group"],
+    )
+
+    assert report.results["subgroup_results"]["group"]["single"]["r2"] is None
+    report.summary()
 
 
 # ── Clustering ────────────────────────────────────────────────────────────────

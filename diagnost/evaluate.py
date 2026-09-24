@@ -133,9 +133,10 @@ def _subgroup_regression(X, y_true, y_pred, feature):
     subgroups = {}
     for group in X[feature].unique():
         mask = X[feature] == group
+        support = int(mask.sum())
         subgroups[str(group)] = {
             "mae": mean_absolute_error(y_true[mask], y_pred[mask]),
-            "r2": r2_score(y_true[mask], y_pred[mask]),
-            "support": int(mask.sum()),
+            "r2": r2_score(y_true[mask], y_pred[mask]) if support >= 2 else None,
+            "support": support,
         }
     return subgroups

@@ -91,6 +91,7 @@ check_calibration(model, X_test, y_test)
 
 Output includes:
 - Expected Calibration Error (ECE) per class
+- Brier score per class
 - Plain-English verdict ("Well calibrated", "Poorly calibrated")
 - Reliability diagram
 

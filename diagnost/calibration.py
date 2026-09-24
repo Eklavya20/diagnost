@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.calibration import calibration_curve
+from sklearn.metrics import brier_score_loss
 
 
 def check_calibration(model, X, y, n_bins=10, plot=True):
@@ -23,9 +24,16 @@ def check_calibration(model, X, y, n_bins=10, plot=True):
 
     if not hasattr(model, "predict_proba"):
         raise ValueError("Model must support predict_proba for calibration analysis.")
+    if not isinstance(n_bins, int) or n_bins < 1:
+        raise ValueError("n_bins must be a positive integer")
 
+    y = np.asarray(y)
     y_proba = model.predict_proba(X)
     classes = model.classes_
+    if len(y) == 0:
+        raise ValueError("y must contain at least one sample")
+    if len(y) != len(y_proba):
+        raise ValueError("X and y must contain the same number of samples")
     results = {}
 
     for i, cls in enumerate(classes):
@@ -36,6 +44,9 @@ def check_calibration(model, X, y, n_bins=10, plot=True):
 
         results[str(cls)] = {
             "expected_calibration_error": round(ece, 4),
+            "brier_score": round(
+                float(brier_score_loss(y_binary, y_proba[:, i])), 4
+            ),
             "prob_true": prob_true.tolist(),
             "prob_pred": prob_pred.tolist(),
         }
@@ -53,12 +64,24 @@ def check_calibration(model, X, y, n_bins=10, plot=True):
 
 def _expected_calibration_error(y_true, y_proba, n_bins):
     """Calculate Expected Calibration Error (ECE)."""
+    y_true = np.asarray(y_true)
+    y_proba = np.asarray(y_proba)
+    if len(y_true) == 0:
+        raise ValueError("y_true must contain at least one sample")
+    if len(y_true) != len(y_proba):
+        raise ValueError("y_true and y_proba must have the same length")
+    if np.any((y_proba < 0) | (y_proba > 1)):
+        raise ValueError("y_proba values must be between 0 and 1")
+
     bins = np.linspace(0, 1, n_bins + 1)
     ece = 0.0
     n = len(y_true)
 
     for i in range(n_bins):
-        mask = (y_proba >= bins[i]) & (y_proba < bins[i + 1])
+        if i == n_bins - 1:
+            mask = (y_proba >= bins[i]) & (y_proba <= bins[i + 1])
+        else:
+            mask = (y_proba >= bins[i]) & (y_proba < bins[i + 1])
         if mask.sum() == 0:
             continue
         bin_acc = y_true[mask].mean()
@@ -103,5 +126,8 @@ def _print_calibration_summary(results):
     """Print plain-English calibration summary."""
     print("\n========== calibration report ==========")
     for cls, data in results.items():
-        print(f"  Class {cls}: ECE={data['expected_calibration_error']} — {data['verdict']}")
+        print(
+            f"  Class {cls}: ECE={data['expected_calibration_error']}, "
+            f"Brier={data['brier_score']} — {data['verdict']}"
+        )
     print("=========================================\n")

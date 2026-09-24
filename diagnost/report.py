@@ -40,8 +40,10 @@ class DiagnostReport:
                 for feature, groups in self.results["subgroup_results"].items():
                     print(f"\n    Feature: {feature}")
                     for group, metrics in groups.items():
+                        r2 = metrics["r2"]
+                        r2_text = f"{r2:.4f}" if r2 is not None else "N/A"
                         print(f"      {group}: mae={metrics['mae']:.4f}, "
-                              f"r2={metrics['r2']:.4f}, n={metrics['support']}")
+                              f"r2={r2_text}, n={metrics['support']}")
 
         elif self.task == "clustering":
             print(f"  Clusters  : {self.results['n_clusters']}")

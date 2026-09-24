@@ -3,13 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def inspect_dataset(df):
+def inspect_dataset(df, plot=True):
     """
     Run diagnostics on a dataset before modelling.
 
     Parameters
     ----------
     df : DataFrame
+    plot : bool, default=True
+        Whether to display feature distribution plots.
 
     Returns
     -------
@@ -18,6 +20,8 @@ def inspect_dataset(df):
 
     if not isinstance(df, pd.DataFrame):
         raise ValueError("Input must be a pandas DataFrame.")
+    if df.empty:
+        raise ValueError("Input DataFrame must contain at least one row and one column.")
 
     results = {
         "shape": df.shape,
@@ -28,7 +32,8 @@ def inspect_dataset(df):
     }
 
     _print_dataset_summary(results, df)
-    _plot_dataset(df, results)
+    if plot:
+        _plot_dataset(df, results)
 
     return results
 
@@ -45,7 +50,16 @@ def _check_missing(df):
 def _check_class_balance(df):
     """Check value distribution for categorical columns."""
     balance = {}
-    for col in df.select_dtypes(include=["category", "str"]).columns:
+    categorical_cols = [
+        col
+        for col in df.columns
+        if (
+            pd.api.types.is_object_dtype(df[col].dtype)
+            or pd.api.types.is_string_dtype(df[col].dtype)
+            or isinstance(df[col].dtype, pd.CategoricalDtype)
+        )
+    ]
+    for col in categorical_cols:
         counts = df[col].value_counts()
         balance[col] = counts.to_dict()
     return balance
@@ -88,21 +102,21 @@ def _print_dataset_summary(results, df):
     print(f"  Shape : {results['shape'][0]} rows x {results['shape'][1]} columns")
 
     if results["missing"]:
-        print(f"\n  Missing Values:")
+        print("\n  Missing Values:")
         for col, m in results["missing"].items():
             print(f"    {col}: {m['count']} ({m['pct']}%)")
     else:
         print("\n  ✓ No missing values.")
 
     if results["correlations"]:
-        print(f"\n  ⚠ Highly Correlated Features (>0.85):")
+        print("\n  ⚠ Highly Correlated Features (>0.85):")
         for pair, val in results["correlations"].items():
             print(f"    {pair}: r={val}")
     else:
         print("  ✓ No high correlations detected.")
 
     if results["outliers"]:
-        print(f"\n  ⚠ Outliers Detected (IQR method):")
+        print("\n  ⚠ Outliers Detected (IQR method):")
         for col, o in results["outliers"].items():
             print(f"    {col}: {o['n_outliers']} outliers ({o['pct']}%)")
     else:
