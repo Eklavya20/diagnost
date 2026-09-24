@@ -1,13 +1,14 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=77.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "diagnost"
-version = "0.1.1"
+version = "0.1.2"
 description = "A model diagnostics library for data scientists — performance, calibration, drift, and reporting in a few lines of Python."
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.9"
 dependencies = [
     "numpy>=1.21",
